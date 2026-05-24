@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wedding Invitation | Артур & Владислава</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      color: #3b332d;
+      background: #fbf7f1;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    #introScreen {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+      background:
+        linear-gradient(rgba(251,247,241,0.88), rgba(251,247,241,0.94)),
+        url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1600&q=80') center/cover;
+    }
+
+    .intro-screen-card {
+      max-width: 440px;
+      width: 100%;
+      padding: 42px 28px;
+      border: 1px solid rgba(133, 105, 83, 0.28);
+      background: rgba(255, 252, 248, 0.86);
+      backdrop-filter: blur(10px);
+      border-radius: 28px;
+      box-shadow: 0 24px 80px rgba(72, 54, 40, 0.18);
+    }
+
+    .intro-screen-card .small-title {
+      font-family: Arial, sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      font-size: 12px;
+      color: #8c6f5b;
+      margin-bottom: 22px;
+    }
+
+    .intro-screen-card h1,
+    .couple-names {
+      font-size: clamp(46px, 12vw, 68px);
+      line-height: 0.95;
+      font-weight: 400;
+      color: #4a3a31;
+      margin-bottom: 20px;
+    }
+
+    .intro-screen-card .intro-date {
+      font-size: 18px;
+      color: #6d5140;
+      margin-bottom: 30px;
+    }
+
+    #openInvitationBtn {
+      border: none;
+      border-radius: 999px;
+      padding: 16px 32px;
+      background: #8f6a55;
+      color: #fff;
+      cursor: pointer;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      box-shadow: 0 10px 28px rgba(72, 54, 40, 0.18);
+    }
+
+    .language-switcher {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      z-index: 1000;
+      display: flex;
+      gap: 10px;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(10px);
+      padding: 8px;
+      border-radius: 999px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    }
+
+    .lang-btn {
+      border: none;
+      background: transparent;
+      padding: 10px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 14px;
+      font-family: Arial, sans-serif;
+      transition: 0.2s ease;
+      color: #5a4033;
+    }
+
+    .lang-btn.active { background: #8f6a55; color: white; }
+    .page { overflow: hidden; }
+
+    .hero {
+      min-height: 100vh;
+      padding: 32px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background:
+        linear-gradient(rgba(251, 247, 241, 0.68), rgba(251, 247, 241, 0.88)),
+        url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1600&q=80') center/cover;
+    }
+
+    .hero-card {
+      max-width: 780px;
+      padding: 56px 32px;
+      border: 1px solid rgba(133, 105, 83, 0.35);
+      background: rgba(255, 252, 248, 0.84);
+      backdrop-filter: blur(8px);
+      border-radius: 28px;
+      box-shadow: 0 24px 80px rgba(72, 54, 40, 0.18);
+    }
+
+    .overline {
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      font-size: 13px;
+      color: #8c6f5b;
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      font-size: clamp(48px, 9vw, 104px);
+      line-height: 0.95;
+      font-weight: 400;
+      margin-bottom: 24px;
+      color: #4a3a31;
+    }
+
+    .couple-names {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      text-align: center;
+    }
+
+    .name-line { display: block; }
+
+    .ampersand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 62px;
+      margin: 12px 0;
+      line-height: 1;
+    }
+
+    .wedding-rings {
+      position: relative;
+      display: inline-block;
+      width: 116px;
+      height: 62px;
+      filter: drop-shadow(0 4px 8px rgba(120, 80, 20, 0.22));
+      animation: ringsGlow 3s ease-in-out infinite;
+    }
+
+    .wedding-rings::before,
+    .wedding-rings::after {
+      content: "";
+      position: absolute;
+      top: 7px;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      box-sizing: border-box;
+      border: 6px solid #d6a02b;
+      background: transparent;
+      box-shadow:
+        inset 2px 2px 3px rgba(255, 248, 205, 0.95),
+        inset -3px -3px 5px rgba(125, 73, 8, 0.42),
+        0 0 0 1px rgba(255, 235, 150, 0.45),
+        0 0 14px rgba(255, 210, 90, 0.24),
+        0 4px 10px rgba(110, 75, 20, 0.23);
+    }
+
+    .wedding-rings::before {
+      left: 21px;
+      z-index: 2;
+    }
+
+    .wedding-rings::after {
+      right: 21px;
+      z-index: 1;
+    }
+
+    .wedding-rings .shine,
+    .wedding-rings .shine::before,
+    .wedding-rings .shine::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      background: #fff7ce;
+      box-shadow:
+        0 0 5px #fff1a2,
+        0 0 12px rgba(255, 219, 89, 0.9),
+        0 0 22px rgba(255, 190, 50, 0.35);
+      z-index: 5;
+      animation: sparkle 2.2s ease-in-out infinite;
+    }
+
+    .wedding-rings .shine {
+      width: 8px;
+      height: 8px;
+      top: 7px;
+      left: 38px;
+    }
+
+    .wedding-rings .shine::before {
+      width: 6px;
+      height: 6px;
+      top: 22px;
+      left: 58px;
+      animation-delay: 0.5s;
+    }
+
+    .wedding-rings .shine::after {
+      width: 5px;
+      height: 5px;
+      top: 35px;
+      left: -10px;
+      animation-delay: 1s;
+    }
+
+    @keyframes ringsGlow {
+      0%, 100% { filter: drop-shadow(0 4px 8px rgba(120, 80, 20, 0.18)) brightness(1); }
+      50% { filter: drop-shadow(0 0 16px rgba(255, 220, 120, 0.48)) brightness(1.08); }
+    }
+
+    @keyframes sparkle {
+      0%, 100% { opacity: 0.35; transform: scale(0.75); }
+      50% { opacity: 1; transform: scale(1.22); }
+    }
+
+    .date {
+      font-size: clamp(20px, 4vw, 32px);
+      color: #6d5140;
+      margin-bottom: 28px;
+    }
+
+    .intro {
+      max-width: 660px;
+      margin: 0 auto 34px;
+      font-size: 18px;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 14px 28px;
+      border-radius: 999px;
+      background: #8f6a55;
+      color: #fff;
+      text-decoration: none;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .button:hover { transform: translateY(-2px); background: #765641; }
+    section { padding: 86px 20px; }
+    .container { max-width: 980px; margin: 0 auto; }
+
+    .section-title {
+      text-align: center;
+      font-size: clamp(34px, 5vw, 54px);
+      font-weight: 400;
+      margin-bottom: 18px;
+      color: #4a3a31;
+    }
+
+    .section-subtitle {
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto 48px;
+      font-size: 18px;
+      color: #6f625b;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(260px, 1fr));
+      gap: 30px;
+      align-items: stretch;
+    }
+
+    .detail-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      width: 100%;
+      min-height: 320px;
+      background: #fffaf5;
+      border: 1px solid rgba(133, 105, 83, 0.18);
+      border-radius: 24px;
+      padding: 30px 22px;
+      text-align: center;
+      box-shadow: 0 14px 50px rgba(72, 54, 40, 0.07);
+    }
+
+    .detail-card .icon { font-size: 32px; margin-bottom: 12px; }
+    .detail-card h3 { font-size: 22px; font-weight: 400; margin-bottom: 10px; color: #5a4033; }
+
+    .mini-date-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+      padding: 18px 12px;
+      border-radius: 18px;
+      background: #fffaf5;
+      border: 1px solid rgba(133,105,83,0.18);
+      box-shadow: 0 10px 30px rgba(72,54,40,0.06);
+      width: 100%;
+      max-width: none;
+    }
+
+    .mini-calendar {
+      width: 36px;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #ffffff;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .mini-calendar-top {
+      background: #e53935;
+      color: white;
+      padding: 4px 0;
+      font-size: 7px;
+      font-weight: bold;
+      position: relative;
+      letter-spacing: 1px;
+    }
+
+    .mini-calendar-top::before,
+    .mini-calendar-top::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 2px;
+      height: 2px;
+      background: white;
+      border-radius: 50%;
+      display: block;
+    }
+
+    .mini-calendar-top::before { left: 5px; }
+    .mini-calendar-top::after { right: 5px; }
+
+    .mini-calendar-day {
+      padding: 4px 0 5px;
+      font-size: 16px;
+      font-weight: 900;
+      color: #111;
+      line-height: 1;
+    }
+
+    .schedule { background: #efe3d7; }
+    .timeline { max-width: 700px; margin: 0 auto; border-left: 1px solid rgba(85, 62, 46, 0.3); padding-left: 28px; }
+    .timeline-item { position: relative; margin-bottom: 30px; }
+    .timeline-item::before { content: ''; width: 13px; height: 13px; border-radius: 50%; background: #8f6a55; position: absolute; left: -35px; top: 9px; }
+    .timeline-time { font-family: Arial, sans-serif; font-size: 14px; letter-spacing: 2px; color: #8f6a55; text-transform: uppercase; }
+    .timeline-title { font-size: 24px; color: #4a3a31; margin-top: 4px; }
+
+    .dress-code { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin-top: 24px; }
+    .color-dot { width: 54px; height: 54px; border-radius: 50%; border: 4px solid #fffaf5; box-shadow: 0 8px 20px rgba(72, 54, 40, 0.14); }
+    .dot-1 { background: #f6d6de; }
+    .dot-2 { background: #e8d8c3; }
+    .dot-3 { background: #d8e9f7; }
+    .dot-4 { background: #ddd3f5; }
+    .dot-5 { background: #d8ead7; }
+
+    .rsvp {
+      background:
+        linear-gradient(rgba(74, 58, 49, 0.75), rgba(74, 58, 49, 0.75)),
+        url('https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1600&q=80') center/cover;
+      color: #fffaf5;
+      text-align: center;
+    }
+
+    .rsvp .section-title, .rsvp .section-subtitle { color: #fffaf5; }
+    .rsvp-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .button.light { background: #fffaf5; color: #5a4033; }
+    .button.light:hover { background: #f2e3d7; }
+    footer { padding: 36px 20px; text-align: center; color: #8c6f5b; font-size: 15px; }
+    .lang-content { display: none; }
+    .lang-content.active { display: block; }
+
+    @media (max-width: 900px) { .details-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 760px) {
+      .hero-card { padding: 42px 22px; }
+      section { padding: 64px 18px; }
+      .language-switcher { top: 14px; right: 14px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="introScreen">
+  <div class="intro-screen-card">
+    <p class="small-title">Wedding Invitation</p>
+    <h1 class="couple-names">
+      <span class="name-line">Артур</span>
+      <span class="ampersand"><span class="wedding-rings" aria-label="Свадебные кольца"><span class="shine"></span></span></span>
+      <span class="name-line">Владислава</span>
+    </h1>
+    <p class="intro-date">22 серпня 2026</p>
+    <button id="openInvitationBtn">Відкрити запрошення</button>
+  </div>
+</div>
+
+<div class="language-switcher">
+  <button class="lang-btn active" onclick="switchLanguage('uk')">UA</button>
+  <button class="lang-btn" onclick="switchLanguage('ru')">RU</button>
+</div>
+
+<div id="uk" class="lang-content active">
+  <main class="page">
+    <section class="hero">
+      <div class="hero-card">
+        <p class="overline">Ми одружуємося</p>
+        <h1 class="couple-names">
+          <span class="name-line">Артур</span>
+          <span class="ampersand"><span class="wedding-rings" aria-label="Свадебные кольца"><span class="shine"></span></span></span>
+          <span class="name-line">Владислава</span>
+        </h1>
+        <p class="date">22 серпня 2026</p>
+        <p class="intro">Дорогі рідні та друзі!<br /><br />Ми будемо щасливі розділити з вами один із найважливіших днів нашого життя.</p>
+        <a class="button" href="#details-uk">Відкрити запрошення</a>
+      </div>
+    </section>
+
+    <section id="details-uk">
+      <div class="container">
+        <h2 class="section-title">Деталі свята</h2>
+        <p class="section-subtitle">Будемо раді бачити вас на нашому святі.</p>
+        <div class="details-grid">
+          <div class="detail-card">
+            <div class="mini-date-card">
+              <div class="mini-calendar"><div class="mini-calendar-top">AUG</div><div class="mini-calendar-day">22</div></div>
+              <h3>Дата проведення</h3>
+              <p>22 серпня 2026</p>
+            </div>
+          </div>
+          <div class="detail-card">
+            <div class="icon">💍</div>
+            <h3>Церемонія в РАЦСі</h3>
+            <p><a href="https://www.google.com/maps/dir/?api=1&destination=вул.+Рішельєвська+4+Одеса" target="_blank" style="color:#8f6a55;text-decoration:none;font-weight:bold;">Центральний РАЦС</a><br />вул. Рішельєвська, 4<br />м. Одеса<br /><br />Початок церемонії — 11:00</p>
+          </div>
+          <div class="detail-card">
+            <div class="icon">🥂</div>
+            <h3>Святкова частина</h3>
+            <p><a href="https://www.google.com/maps/dir/?api=1&destination=1+Люстдорфська+дорога+172/1+Одеса" target="_blank" style="color:#8f6a55;text-decoration:none;font-weight:bold;">Ресторан «Ренессанс»</a><br />Люстдорфська дорога, 172/1<br />м. Одеса<br /><br />Початок — 14:00</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="schedule">
+      <div class="container">
+        <h2 class="section-title">Програма дня</h2>
+        <div class="timeline">
+          <div class="timeline-item"><p class="timeline-time">11:00</p><p class="timeline-title">Церемонія в РАЦСі</p><p>Офіційна церемонія одруження.</p></div>
+          <div class="timeline-item"><p class="timeline-time">14:00</p><p class="timeline-title">Збір гостей та фуршет</p><p>Легка атмосфера, знайомства та спілкування.</p></div>
+          <div class="timeline-item"><p class="timeline-time">15:00</p><p class="timeline-title">Зустріч молодят</p><p>Тепла зустріч молодят та святковий настрій.</p></div>
+          <div class="timeline-item"><p class="timeline-time">16:30</p><p class="timeline-title">Святкова вечеря</p><p>Музика, танці та незабутній вечір.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <h2 class="section-title">Dress code</h2>
+        <p class="section-subtitle">Нам буде приємно, якщо ви підтримаєте кольорову палітру нашого свята: ніжно-рожевий, бежевий, ніжно-блакитний, ніжно-фіолетовий та ніжно-зелений.</p>
+        <div class="dress-code"><span class="color-dot dot-1"></span><span class="color-dot dot-2"></span><span class="color-dot dot-3"></span><span class="color-dot dot-4"></span><span class="color-dot dot-5"></span></div>
+      </div>
+    </section>
+
+    <section class="rsvp">
+      <div class="container">
+        <h2 class="section-title">Підтвердіть присутність</h2>
+        <p class="section-subtitle">Будь ласка, повідомте нам до 1 серпня, чи зможете ви бути з нами цього дня.</p>
+        <div class="rsvp-actions" style="display:flex;justify-content:center;gap:14px;flex-wrap:wrap;">
+          <a class="button light" href="tel:+380664256930">🤵🏻 Наречений</a>
+          <a class="button light" href="tel:+380633330299">👰🏻‍♀ Наречена</a>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div id="ru" class="lang-content">
+  <main class="page">
+    <section class="hero">
+      <div class="hero-card">
+        <p class="overline">Мы женимся</p>
+        <h1 class="couple-names">
+          <span class="name-line">Артур</span>
+          <span class="ampersand"><span class="wedding-rings" aria-label="Свадебные кольца"><span class="shine"></span></span></span>
+          <span class="name-line">Владислава</span>
+        </h1>
+        <p class="date">22 августа 2026</p>
+        <p class="intro">Дорогие родные и друзья!<br /><br />Мы будем счастливы разделить с вами один из самых важных дней нашей жизни.</p>
+        <a class="button" href="#details-ru">Открыть приглашение</a>
+      </div>
+    </section>
+
+    <section id="details-ru">
+      <div class="container">
+        <h2 class="section-title">Детали торжества</h2>
+        <p class="section-subtitle">Будем рады видеть вас на нашем празднике.</p>
+        <div class="details-grid">
+          <div class="detail-card">
+            <div class="mini-date-card">
+              <div class="mini-calendar"><div class="mini-calendar-top">AUG</div><div class="mini-calendar-day">22</div></div>
+              <h3>Дата проведения</h3>
+              <p>22 августа 2026</p>
+            </div>
+          </div>
+          <div class="detail-card">
+            <div class="icon">💍</div>
+            <h3>Церемония в ЗАГСе</h3>
+            <p><a href="https://www.google.com/maps/dir/?api=1&destination=ул.+Ришельевская+4+Одесса" target="_blank" style="color:#8f6a55;text-decoration:none;font-weight:bold;">Центральный ЗАГС</a><br />ул. Ришельевская, 4<br />г. Одесса<br /><br />Начало церемонии — 11:00</p>
+          </div>
+          <div class="detail-card">
+            <div class="icon">🥂</div>
+            <h3>Торжественная часть</h3>
+            <p><a href="https://www.google.com/maps/dir/?api=1&destination=1+Люстдорфская+дорога+172/1+Одесса" target="_blank" style="color:#8f6a55;text-decoration:none;font-weight:bold;">Ресторан «Ренессанс»</a><br />Люстдорфская дорога, 172/1<br />г. Одесса<br /><br />Начало — 14:00</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="schedule">
+      <div class="container">
+        <h2 class="section-title">Программа дня</h2>
+        <div class="timeline">
+          <div class="timeline-item"><p class="timeline-time">11:00</p><p class="timeline-title">Церемония в ЗАГСе</p><p>Официальная церемония бракосочетания.</p></div>
+          <div class="timeline-item"><p class="timeline-time">14:00</p><p class="timeline-title">Сбор гостей и фуршет</p><p>Лёгкая атмосфера, знакомства и общение.</p></div>
+          <div class="timeline-item"><p class="timeline-time">15:00</p><p class="timeline-title">Встреча молодожёнов</p><p>Тёплая встреча молодожёнов и праздничное настроение.</p></div>
+          <div class="timeline-item"><p class="timeline-time">16:30</p><p class="timeline-title">Праздничный ужин</p><p>Музыка, танцы и незабываемый вечер.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <h2 class="section-title">Dress code</h2>
+        <p class="section-subtitle">Нам будет приятно, если вы поддержите цветовую палитру нашего праздника: нежно-розовый, бежевый, нежно-голубой, нежно-фиолетовый и нежно-зелёный.</p>
+        <div class="dress-code"><span class="color-dot dot-1"></span><span class="color-dot dot-2"></span><span class="color-dot dot-3"></span><span class="color-dot dot-4"></span><span class="color-dot dot-5"></span></div>
+      </div>
+    </section>
+
+    <section class="rsvp">
+      <div class="container">
+        <h2 class="section-title">Подтвердите присутствие</h2>
+        <p class="section-subtitle">Пожалуйста, сообщите нам до 1 августа, сможете ли вы быть с нами в этот день.</p>
+        <div class="rsvp-actions" style="display:flex;justify-content:center;gap:14px;flex-wrap:wrap;">
+          <a class="button light" href="tel:+380664256930">🤵🏻 Жених</a>
+          <a class="button light" href="tel:+380633330299">👰🏻‍♀ Невеста</a>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<footer>Артур & Владислава ♡ 22.08.2026</footer>
+
+<audio id="bgMusic" loop playsinline preload="auto">
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+  function switchLanguage(lang) {
+    document.querySelectorAll('.lang-content').forEach(el => el.classList.remove('active'));
+    document.getElementById(lang).classList.add('active');
+    document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+
+    if (lang === 'uk') {
+      document.querySelectorAll('.lang-btn')[0].classList.add('active');
+      document.documentElement.lang = 'uk';
+      document.getElementById('openInvitationBtn').textContent = 'Відкрити запрошення';
+    } else {
+      document.querySelectorAll('.lang-btn')[1].classList.add('active');
+      document.documentElement.lang = 'ru';
+      document.getElementById('openInvitationBtn').textContent = 'Открыть приглашение';
+    }
+  }
+
+  const music = document.getElementById('bgMusic');
+  music.volume = 0.25;
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      music.pause();
+    } else {
+      music.play().catch(() => {});
+    }
+  });
+
+  function hideIntro() {
+    const introScreen = document.getElementById('introScreen');
+    introScreen.style.transition = 'opacity 0.8s ease';
+    introScreen.style.opacity = '0';
+    setTimeout(() => { introScreen.style.display = 'none'; }, 800);
+  }
+
+  document.getElementById('openInvitationBtn').addEventListener('click', async () => {
+    try { await music.play(); } catch(e) {}
+    hideIntro();
+  });
+</script>
+
+</body>
+</html>
